@@ -10,11 +10,7 @@ class Settings(BaseSettings):
     ALGORITHM: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int
     
-    DB_HOST: str
-    DB_PORT: int
-    DB_USER: str
-    DB_PASSWORD: str
-    DB_NAME: str
+    DATABASE_URL: str
     
     LOGIN_RATE_LIMIT_MAX_REQUESTS: int
     LOGIN_RATE_LIMIT_WINDOW_SECONDS: int

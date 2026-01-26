@@ -68,21 +68,31 @@ ENVIRONMENT VARIABLES: -
 Create a `.env` file in the root directory.
 
 APP_NAME=Orbit
+APP_VERSION=1.0.0
 APP_ENV=development
 APP_DEBUG=true
 
-DB_HOST=mysql
-DB_PORT=3306
-DB_NAME=orbit
-DB_USER=root
-DB_PASSWORD=root
+DATABASE_URL=""
 
-JWT_SECRET_KEY=your_jwt_secret
-JWT_EXPIRE_MINUTES=10080
+JWT_SECRET_KEY=your_jwt_secret=
+ALGORITHM=
+ACCESS_TOKEN_EXPIRE_MINUTES=10080
+
+LOGIN_RATE_LIMIT_MAX_REQUESTS=
+LOGIN_RATE_LIMIT_WINDOW_SECONDS=
+LOGIN_RATE_LIMIT_BLOCK_SECONDS=
+
+
+
 
 RUN APPLICATION:-
-
 uvicorn app.main:app --reload
+
+
+For Alembic Migration:-
+
+alembic init alembic
+
 
 
 ERROR HANDLING:-

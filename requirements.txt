@@ -1,11 +1,13 @@
 fastapi
 uvicorn
 sqlalchemy
-pymysql
+# pymysql
 pydantic-settings
 python-dotenv
-cryptography
+sqlalchemy asyncpg psycopg2-binary
+# cryptography
 pydantic[email]
 python-jose
 bcrypt==3.2.2
 passlib[bcrypt]
+alembic
