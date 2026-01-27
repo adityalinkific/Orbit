@@ -1,0 +1,15 @@
+from pydantic import BaseModel, Field
+from datetime import datetime
+
+
+class CreateDepartmentRequest(BaseModel):
+    name: str = Field(..., min_length=3, max_length=50)
+    description: str = Field(None, max_length=255)
+
+
+class DepartmentResponse(BaseModel):
+    id: int
+    name: str
+    description: str | None
+    created_at: datetime
+    updated_at: datetime
