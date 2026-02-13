@@ -6,15 +6,11 @@ from app.modules.role.role_repository import RoleRepository
 class RoleService:
 
     @staticmethod
-    async def create_role(data, db: AsyncSession):
+    async def create_role(data, db: AsyncSession, current_user):
 
         # 1️⃣ Duplicate role check
         existing_role = await RoleRepository.get_by_role_name(db, data.role)
-        current_user = "super_admin"  # This should be fetched from the request context or session
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Insufficient permissions"
-        )
+        current_user = current_user.role.role
         if current_user != "super_admin":
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,

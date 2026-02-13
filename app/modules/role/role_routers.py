@@ -8,8 +8,8 @@ from app.modules.role.role_schema import CreateRoleRequest, RoleResponse
 router = APIRouter(prefix= '/roles', tags= ['Roles'])
 
 @router.post('/', response_model=ApiResponse[RoleResponse], summary= "Create a Role")
-async def create_role(data: CreateRoleRequest, db: AsyncSession = Depends(get_db), _= Depends(require_roles("super_admin"))):
-    return await RoleController.create_role(data, db)
+async def create_role(data: CreateRoleRequest, db: AsyncSession = Depends(get_db), current_user= Depends(require_roles("super_admin"))):
+    return await RoleController.create_role(data, db, current_user)
 
 
 @router.get('/', response_model=ApiResponse[list[RoleResponse]], summary= "Get All Roles")

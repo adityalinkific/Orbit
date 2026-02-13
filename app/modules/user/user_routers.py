@@ -1,0 +1,21 @@
+from fastapi import APIRouter, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
+from app.core.schema import ApiResponse
+from app.core.dependency import get_db, require_roles, get_current_user
+
+from app.modules.user.user_controller import UserController
+from app.modules.auth.auth_model import User
+from app.modules.auth.auth_schema import UserResponse
+from app.modules.user.user_schema import ChangePassword
+
+
+user_router = APIRouter(prefix= '/user', tags= ['User'])
+
+@user_router.get('/all-users', response_model= ApiResponse[list[UserResponse]], summary= "All Users Details")
+async def all_users(db: AsyncSession = Depends(get_db), current_user= Depends(require_roles('super_admin', 'admin'))):
+    return await UserController._all_user(db)
+
+
+@user_router.patch('/change-password', response_model= ApiResponse[None], summary= "Change Your Password")
+async def change_password(data: ChangePassword, db: AsyncSession = Depends(get_db), current_user= Depends(get_current_user)):
+    return await UserController._change_password(data, db, current_user)

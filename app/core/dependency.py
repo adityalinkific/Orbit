@@ -19,7 +19,7 @@ async def get_db():
 async def get_current_user(request: Request, token: HTTPAuthorizationCredentials = Depends(security), db: AsyncSession = Depends(get_db)):
     try:
         
-        payload = TokenService.decode_access_token(token.credentials)
+        payload = TokenService._decode_access_token(token.credentials)
 
         email: str | None = payload.get("sub")
 
@@ -41,6 +41,12 @@ async def get_current_user(request: Request, token: HTTPAuthorizationCredentials
         )
         result = await db.execute(stmt)
         user = result.scalars().first()
+        
+        if not user.logged_in:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail = "You are logged out. Login again."
+            )
 
         if not user:
             raise HTTPException(

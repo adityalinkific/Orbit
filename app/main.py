@@ -3,6 +3,7 @@ from fastapi.exceptions import RequestValidationError, ResponseValidationError
 from app.routers import api_router
 import app.models
 from app.core.middleware.error_handlers import http_exception_handler, response_validation_exception_handler, global_exception_handler, custom_request_validation_exception_handler
+from app.core.middleware.cors_middleware import register_cors
 
 app = FastAPI(
         title= "TaskFlow API",
@@ -18,6 +19,7 @@ app = FastAPI(
         },
     )
 
+register_cors(app)
 
 app.add_exception_handler(RequestValidationError, custom_request_validation_exception_handler)
 app.add_exception_handler(HTTPException, http_exception_handler)

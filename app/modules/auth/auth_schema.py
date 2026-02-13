@@ -15,9 +15,10 @@ class RegisterResponse(BaseModel):
     id: int
     emp_id: str
     name: str
-    email: EmailStr
-    role: int
-    department: int
+    email: str
+    role_id: int
+    department_id: int
+    reporting_manager_id: int | None
 
 
 class LoginRequest(BaseModel):

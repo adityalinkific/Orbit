@@ -7,9 +7,9 @@ from app.modules.role.role_services import RoleService
 class RoleController:
 
     @staticmethod
-    async def create_role(data: CreateRoleRequest, db: AsyncSession):
+    async def create_role(data: CreateRoleRequest, db: AsyncSession, current_user):
 
-        role = await RoleService.create_role(data, db)
+        role = await RoleService.create_role(data, db, current_user)
 
         return {
             "status": True,
