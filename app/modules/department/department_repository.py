@@ -1,26 +1,48 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import exists, select
 from app.modules.department.department_model import Department
 
 
 class DepartmentRepository:
 
     @staticmethod
-    async def get_by_name(db: AsyncSession, name: str):
-        result = await db.execute(
-            select(Department).where(Department.name == name)
-        )
-        return result.scalar_one_or_none()
+    async def _create(db: AsyncSession, data):
+        db.add(data)
+        return data
+    
+    
+    @staticmethod
+    async def _update(update_data: dict, instance: any):
+        for field, value in update_data.items():
+            setattr(instance, field, value)
+        
+        return instance
+    
+    @staticmethod
+    async def _delete(db: AsyncSession, instance):
+        return await db.delete(instance)
+    
+
+class RecordExists():
 
     @staticmethod
-    async def create(db: AsyncSession, name: str, description: str | None):
-        department = Department(name=name, description=description)
-        db.add(department)
-        return department
+    async def _check(db: AsyncSession, *conditions) -> bool:
+        stmt = select(exists().where(*conditions))
+        result = await db.execute(stmt)
+        return result.scalar()
 
+
+class GetDetail:
     @staticmethod
-    async def fetch_all(db: AsyncSession):
-        result = await db.execute(
-            select(Department).order_by(Department.id.asc())
-        )
+    async def _get_all(db: AsyncSession, model, *conditions):
+        stmt = select(model).order_by(model.id.desc())
+        if conditions:
+            stmt = stmt.where(*conditions)
+        result = await db.execute(stmt)
         return result.scalars().all()
+    
+    @staticmethod
+    async def _get_one(db: AsyncSession, model, *conditions):
+        stmt = select(model).where(*conditions)
+        result = await db.execute(stmt)
+        return result.scalars().first()

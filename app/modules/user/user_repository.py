@@ -6,6 +6,14 @@ from app.modules.auth.auth_model import User
 
 class UserRepository:
     @staticmethod
+    async def _update(update_data: dict, instance: any):
+        for field, value in update_data.items():
+            setattr(instance, field, value)
+        
+        return instance
+    
+class GetDetail:
+    @staticmethod
     async def _all_data(db):
         stmt = (select(User)
             .options(
@@ -18,8 +26,7 @@ class UserRepository:
         return users
     
     @staticmethod
-    async def _update(update_data: dict, instance: any):
-        for field, value in update_data.items():
-            setattr(instance, field, value)
-        
-        return instance
+    async def _get_one(db: AsyncSession, model, *conditions):
+        stmt = select(model).where(*conditions)
+        result = await db.execute(stmt)
+        return result.scalars().first()

@@ -86,7 +86,7 @@ LOGIN_RATE_LIMIT_BLOCK_SECONDS=
 
 
 RUN APPLICATION:-
-uvicorn app.main:app --reload
+uvicorn app.main:app
 
 
 For Alembic Migration:-

@@ -1,5 +1,6 @@
 from pydantic import BaseModel, field_validator
 import re
+from datetime import date
 
 class ChangePassword(BaseModel):
     current_password: str
@@ -23,3 +24,12 @@ class ChangePassword(BaseModel):
             # raise ValueError(" ".join(errors))
             raise ValueError(errors)
         return password
+    
+class UpdateUserDetailsRequest(BaseModel):
+    name: str | None
+    password: str | None
+    role_id: int | None
+    reporting_manager_id: int | None
+    department_id: int | None
+    is_active: bool | None
+    joined_date: date | None

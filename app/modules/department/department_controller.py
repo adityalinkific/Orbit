@@ -5,8 +5,8 @@ from app.modules.department.department_services import DepartmentService
 class DepartmentController:
 
     @staticmethod
-    async def create_department(data, db: AsyncSession):
-        department = await DepartmentService.create_department(data, db)
+    async def _create_department(data, db: AsyncSession):
+        department = await DepartmentService._create_department(data, db)
 
         return {
             "status": True,
@@ -21,8 +21,8 @@ class DepartmentController:
         }
 
     @staticmethod
-    async def get_departments(db: AsyncSession):
-        departments = await DepartmentService.get_departments(db)
+    async def _get_departments(db: AsyncSession):
+        departments = await DepartmentService._get_departments(db)
 
         return {
             "status": True,
@@ -37,4 +37,42 @@ class DepartmentController:
                 }
                 for dept in departments
             ]
+        }
+        
+        
+        
+    @staticmethod
+    async def _get_perticular_department(department_id, db):
+        dept = await DepartmentService._get_department(department_id, db)
+
+        return {
+            "status": True,
+            "message": "Department fetched successfully",
+            "data": {
+                "id": dept.id,
+                "name": dept.name,
+                "description": dept.description,
+                "created_at": dept.created_at,
+                "updated_at": dept.updated_at
+            }
+        }
+        
+    
+    @staticmethod
+    async def _update_department(department_id, data, db):
+        department_detail = await DepartmentService._update_department(department_id, data, db)
+        return {
+            'status' : True,
+            'message' : 'Department updated successfully.',
+            'data' : None
+        }
+        
+    
+    @staticmethod
+    async def _delete_department(department_id, db):
+        await DepartmentService._delete(department_id, db)
+        return {
+            'status' : True,
+            'message' : 'Department deleted successfully.',
+            'data' : None
         }

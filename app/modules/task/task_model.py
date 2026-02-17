@@ -41,9 +41,6 @@ class Task(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
 
-    # creator = relationship("User")
-    # assignments = relationship("TaskAssignment", back_populates="task", cascade="all, delete-orphan")
-    # update_by = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
 
 
 class TaskAssignment(Base):
@@ -60,9 +57,6 @@ class TaskAssignment(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
 
-    # report = relationship("Report", uselist=False, backref="task_assignment")
-    # review = relationship("ReportReview", uselist=False, backref="task_assignment")
-    # task = relationship("Task")
     
     
 
@@ -81,7 +75,6 @@ class Report(Base):
     created_at = Column(DateTime(timezone=True), index= True, server_default=func.now(), nullable=False)
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
 
-    # review = relationship("ReportReview", back_populates="report", uselist=False)
 
 
 class ReportAttachment(Base):
@@ -95,7 +88,6 @@ class ReportAttachment(Base):
     created_at = Column(DateTime(timezone=True), index= True, server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
-    # report = relationship("Report", back_populates="attachments")
 
 
 
@@ -110,4 +102,3 @@ class ReportReview(Base):
     created_at = Column(DateTime(timezone=True), index= True, server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
-    # report = relationship("Report", back_populates="review")

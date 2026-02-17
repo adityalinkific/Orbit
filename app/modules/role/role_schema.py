@@ -15,3 +15,8 @@ class RoleResponse(BaseModel):
     updated_at: datetime
     
 
+class RoleUpdateSchema(BaseModel):
+    role: str | None = Field(None, min_length=3, max_length=50)
+    description: str | None = Field(None, max_length=255)
+    
+

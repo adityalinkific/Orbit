@@ -151,3 +151,24 @@ class AuthService:
         except Exception:
             await db.rollback()
             raise
+        
+
+class RecordChecking:
+    @staticmethod
+    async def _check(db: AsyncSession, field, id: int, message: str):
+        if not await RecordExists._check(message, field == id):
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, 
+                detail= f"Invalid {message} selected."
+            )
+
+class GetDetails:
+    @staticmethod
+    async def _get_details(db: AsyncSession, model, id: int, message: str):
+        result = await GetRecord._get_one(db, model, model.id == id)
+        if not result:
+            raise HTTPException(
+                status_code= status.HTTP_404_NOT_FOUND,
+                detail= f"{message.upper()} not found."
+            )
+        return result

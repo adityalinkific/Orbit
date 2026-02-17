@@ -13,3 +13,7 @@ class DepartmentResponse(BaseModel):
     description: str | None
     created_at: datetime
     updated_at: datetime
+    
+class UpdateDepartmentRequest(BaseModel):
+    name: str | None = Field(None, min_length=3, max_length=50)
+    description: str = Field(None, max_length=255)

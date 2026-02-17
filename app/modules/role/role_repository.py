@@ -1,26 +1,46 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
-from app.modules.auth.auth_model import Role
-
+from sqlalchemy import exists, select
 
 class RoleRepository:
 
     @staticmethod
-    async def get_by_role_name(db: AsyncSession, role: str):
-        result = await db.execute(
-            select(Role).where(Role.role == role)
-        )
-        return result.scalar_one_or_none()
+    async def _create(db: AsyncSession, data):
+        db.add(data)
+        return data
+    
+    
+    @staticmethod
+    async def _update(update_data: dict, instance: any):
+        for field, value in update_data.items():
+            setattr(instance, field, value)
+        
+        return instance
+    
+    @staticmethod
+    async def _delete(db: AsyncSession, instance):
+        return await db.delete(instance)
+    
+
+class RecordExists():
 
     @staticmethod
-    async def create(db: AsyncSession, role: str, description: str):
-        new_role = Role(role=role, description=description)
-        db.add(new_role)
-        return new_role
-    
-    
-    async def fetch_all(db: AsyncSession):
-        result = await db.execute(
-            select(Role).order_by(Role.id.asc())
-        )
+    async def _check(db: AsyncSession, *conditions) -> bool:
+        stmt = select(exists().where(*conditions))
+        result = await db.execute(stmt)
+        return result.scalar()
+
+
+class GetDetail:
+    @staticmethod
+    async def _get_all(db: AsyncSession, model, *conditions):
+        stmt = select(model).order_by(model.id.desc())
+        if conditions:
+            stmt = stmt.where(*conditions)
+        result = await db.execute(stmt)
         return result.scalars().all()
+    
+    @staticmethod
+    async def _get_one(db: AsyncSession, model, *conditions):
+        stmt = select(model).where(*conditions)
+        result = await db.execute(stmt)
+        return result.scalars().first()
