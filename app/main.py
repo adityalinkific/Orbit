@@ -16,7 +16,7 @@ app = FastAPI(
         },
         license_info={
             "name": "Proprietary- Internal Use Only",
-            'url': settings.FRONTEND_URL
+            'url': "https://demo.com"
         },
     )
 
