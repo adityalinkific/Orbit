@@ -1,11 +1,12 @@
 from pydantic_settings import BaseSettings
+from typing import List
 
 class Settings(BaseSettings):
     APP_NAME: str
     APP_VERSION: str
     APP_ENV: str
     APP_DEBUG: bool
-    
+    FRONTEND_URL: List[str]  
     JWT_SECRET_KEY: str
     ALGORITHM: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int
