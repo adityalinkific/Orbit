@@ -32,6 +32,6 @@ app.include_router(api_router)
 @app.get("/")
 def root():
     return {
-        "status" : True,
+        "status" : "success",
         "message" : "Orbit API Running Successfully!"
     }

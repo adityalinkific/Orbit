@@ -92,36 +92,3 @@ async def submit_report(data: TaskSubmitSchema, db: AsyncSession = Depends(get_d
 @report_router.post('/upload-document', response_model=ApiResponse[None], summary= "Upload Document Related to Assigned Task")
 async def upload_document(assign_task_id: int = Form(...), link: str | None = Form(None), file: UploadFile | None = File(None), db: AsyncSession = Depends(get_db), current_user= Depends(get_current_user)):
     return await AssignTaskReportController._upload_document(assign_task_id, link, file, db, current_user)
-
-
-# @router.patch("/review/{task_id}/{user_id}")
-# async def review_task(task_id: int,  user_id: int, data: ReportReviewSchema, db: AsyncSession = Depends(get_db),  current_user=Depends(require_roles("super_admin", "admin"))):
-#     return await task_controller.review_task(db, task_id, user_id, data, current_user)
-
-
-# @router.get("/my")
-# async def get_my_tasks(db: AsyncSession = Depends(get_db), current_user=Depends(get_current_user)):
-#     return await task_controller.get_my_tasks(db, current_user)
-
-
-# @router.get("/review/pending")
-# async def get_tasks_for_review(db: AsyncSession = Depends(get_db), current_user=Depends(require_roles("admin", "employee"))):
-#     return await task_controller.get_tasks_for_review(db, current_user)
-
-
-# @router.get("/{task_id}")
-# async def get_task_detail(
-#     task_id: int,
-#     db: AsyncSession = Depends(get_db),
-#     current_user=Depends(get_current_user)
-# ):
-#     return await task_controller.get_task_detail(db, task_id, current_user)
-
-
-
-# @router.get("/reports/my")
-# async def get_my_reports(
-#     db: AsyncSession = Depends(get_db),
-#     current_user=Depends(require_roles("intern"))
-# ):
-#     return await task_controller.get_my_reports(db, current_user)

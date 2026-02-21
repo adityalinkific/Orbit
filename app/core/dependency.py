@@ -6,8 +6,8 @@ from sqlalchemy.orm import selectinload
 from app.core.database import AsyncSessionLocal
 from app.modules.auth.auth_model import User
 from jose import JWTError, jwt
-from app.core.config import settings
 from app.core.security import TokenService
+from app.core.schema import Response
 
 security = HTTPBearer()
 
@@ -26,10 +26,7 @@ async def get_current_user(request: Request, token: HTTPAuthorizationCredentials
         if not email:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail={
-                    "status": False,
-                    "message": "Invalid token",
-                },
+                detail= await Response._error_response("Invalid token")
             )
 
         stmt = (select(User)
@@ -45,25 +42,19 @@ async def get_current_user(request: Request, token: HTTPAuthorizationCredentials
         if not user.logged_in:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail = "You are logged out. Login again."
+                detail = await Response._error_response("You are logged out. Login again.")
             )
 
         if not user:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail={
-                    "status": False,
-                    "message": "Unauthenticated",
-                },
+                detail= await Response._error_response("Unauthenticated")
             )
 
         if not user.is_active:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail={
-                    "status": False,
-                    "message": "You are blocked. Please contact admin.",
-                },
+                detail= await Response._error_response("You are blocked. Please contact admin.")
             )
 
         request.state.user = user
@@ -72,10 +63,7 @@ async def get_current_user(request: Request, token: HTTPAuthorizationCredentials
     except JWTError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail={
-                "status": False,
-                "message": "Invalid or expired token",
-            },
+            detail= "Invalid or expired token",
         )
 
 
@@ -87,10 +75,7 @@ def require_roles(*allowed_roles: str):
         if user_role not in allowed_roles:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail={
-                    "status": False,
-                    "message": "You do not have permission to perform this action",
-                },
+                detail= await Response._error_response("You do not have permission to perform this action.")
             )
 
         return current_user

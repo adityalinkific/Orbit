@@ -10,4 +10,3 @@ def register_cors(app: FastAPI) -> None:
         allow_methods= ["*"],
         allow_headers= ["*"],
     )
-print(settings.FRONTEND_URL)

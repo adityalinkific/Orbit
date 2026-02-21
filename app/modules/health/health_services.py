@@ -1,6 +1,7 @@
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import text
+from app.core.schema import Response
 
 class HealthServices():
     async def health_check(db: AsyncSession):
@@ -14,14 +15,7 @@ class HealthServices():
         if errors:
             return JSONResponse(
                 status_code=503,
-                content={
-                    "status": False,
-                    "message": "Service unavailable",
-                    "errors": errors
-                }
+                content= await Response._error_response("Service unavailable", errors)
             )
             
-        return {
-            "status": True,
-            "message": "Database connected"
-        }
+        return await Response._success_response("Database connected")

@@ -2,6 +2,8 @@ from fastapi import Request, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError, ResponseValidationError
 import logging
+from app.core.schema import Response
+
 
 logger = logging.getLogger(__name__)
 
@@ -21,22 +23,14 @@ async def custom_request_validation_exception_handler(request: Request, exc: Req
 
     return JSONResponse(
         status_code=422,
-        content={
-            "status": False,
-            "message": "Validation error",
-            "data": message
-        }
+        content= await Response._error_response("validation error", message)
     )
 
 
 async def http_exception_handler(request: Request, exc: HTTPException):
     return JSONResponse(
         status_code=exc.status_code,
-        content={
-            "status": False,
-            "message": exc.detail,
-            "data": None
-        }
+        content= await Response._error_response(exc.detail)
     )
 
 
@@ -47,11 +41,7 @@ async def response_validation_exception_handler(
     logger.error(exc)
     return JSONResponse(
         status_code=500,
-        content={
-            "status": False,
-            "message": "Response validation failed",
-            "data": None
-        }
+        content= await Response._error_response("Response validation failed")
     )
 
 
@@ -60,9 +50,5 @@ async def global_exception_handler(request: Request, exc: Exception):
 
     return JSONResponse(
         status_code=500,
-        content={
-            "status": False,
-            "message": "Internal server error",
-            "data": None
-        }
+        content= await Response._error_response("Internal server error")
     )
