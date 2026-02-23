@@ -31,6 +31,7 @@ class GetRecord:
                 selectinload(User.role),
                 selectinload(User.department)
             )
+            .order_by(User.id.desc())
             # .where(User.email == email)
         )
         result = await db.execute(stmt)

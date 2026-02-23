@@ -9,19 +9,16 @@ class AuthController:
     async def _register(data, db, current_user):
         user = await AuthService.register_user(data, db, current_user)
         print(user)
-        return {
-            "status": True,
-            "message": "User registered successfully",
-            "data": {
-                "id": user.id,
-                "emp_id": user.emp_id,
-                "name": user.name,
-                "email": user.email,
-                "role_id": user.role_id,
-                "department_id": user.department_id,
-                "reporting_manager_id": user.reporting_manager_id
-            }
+        data = {
+            "id": user.id,
+            "emp_id": user.emp_id,
+            "name": user.name,
+            "email": user.email,
+            "role_id": user.role_id,
+            "department_id": user.department_id,
+            "reporting_manager_id": user.reporting_manager_id
         }
+        return await Response._success_response("User registered successfully", data)
         
         
     @staticmethod
