@@ -22,5 +22,4 @@ async def change_password(data: ChangePassword, db: AsyncSession = Depends(get_d
 
 @user_router.put('/update-user/{user_id}', response_model= ApiResponse[UserResponse], summary= "Update User's Details")
 async def update_user(user_id: int, data: UpdateUserDetailsRequest, db: AsyncSession = Depends(get_db), _= Depends(require_roles('super_admin', 'admin'))):
-    print('reached router level')
     return await UserController._update_user(user_id, data, db)

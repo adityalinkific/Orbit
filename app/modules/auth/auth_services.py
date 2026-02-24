@@ -156,7 +156,7 @@ class AuthService:
 class RecordChecking:
     @staticmethod
     async def _check(db: AsyncSession, field, id: int, message: str):
-        if not await RecordExists._check(message, field == id):
+        if not await RecordExists._check(db, field == id):
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, 
                 detail= f"Invalid {message} selected."

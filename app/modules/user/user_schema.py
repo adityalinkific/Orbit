@@ -26,10 +26,10 @@ class ChangePassword(BaseModel):
         return password
     
 class UpdateUserDetailsRequest(BaseModel):
-    name: str | None
-    password: str | None
-    role_id: int | None
-    reporting_manager_id: int | None
-    department_id: int | None
-    is_active: bool | None
-    joined_date: date | None
+    name: str | None = None
+    password: str | None = None
+    role_id: int | None = None
+    reporting_manager_id: int | None = None
+    department_id: int | None = None
+    is_active: bool | None = None
+    joined_date: date | None = None

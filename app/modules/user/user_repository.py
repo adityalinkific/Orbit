@@ -16,6 +16,7 @@ class GetDetail:
     @staticmethod
     async def _all_data(db):
         stmt = (select(User)
+            .order_by(User.id.desc())
             .options(
                 selectinload(User.role),
                 selectinload(User.department)

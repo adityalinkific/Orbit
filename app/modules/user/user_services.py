@@ -33,7 +33,7 @@ class UserServices:
             raise
         
     async def _update_user(user_id: int, data: UpdateUserDetailsRequest, db: AsyncSession):
-        user_detail = GetDetails._get_details(db, User, user_id, "user")
+        user_detail = await GetDetails._get_details(db, User, user_id, "user")
         update_data = data.model_dump(exclude_unset=True)
         if not update_data:
             raise HTTPException(
@@ -41,14 +41,15 @@ class UserServices:
                 detail="At least one field is required for updating the task."
             )
         
-        RecordChecking._check(db, Department.id, data.department_id, "department")
-        RecordChecking._check(db, Role.id, data.role_id, 'role')
+        if data.department_id: 
+            await RecordChecking._check(db, Department.id, data.department_id, "department")
+        if data.role_id:
+            await RecordChecking._check(db, Role.id, data.role_id, 'role')
         if data.reporting_manager_id:
-            RecordChecking._check(db, User.id, data.reporting_manager_id, 'reporting manager')
-        print(update_data)
-        print('password is :', update_data.password)
-        update_data.password = PasswordService._hash(data.password)
-        print('hashing password : ', update_data.password)
+            await RecordChecking._check(db, User.id, data.reporting_manager_id, 'reporting manager')
+        
+        if data.password:
+            update_data.password = PasswordService._hash(data.password)
             
         try:
             result = await UserRepository._update(update_data, user_detail)
