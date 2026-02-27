@@ -1,5 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException, status
+from app.modules.auth.auth_model import User
 from app.modules.department.department_schema import CreateDepartmentRequest, UpdateDepartmentRequest
 from app.modules.department.department_model import Department
 from app.modules.department.department_repository import DepartmentRepository, RecordExists, GetDetail
@@ -9,14 +10,20 @@ class DepartmentService:
 
     @staticmethod
     async def _create_department(data: CreateDepartmentRequest, db: AsyncSession):
-        if RecordExists._check(db, Department.name == data.name):
+        if await RecordExists._check(db, Department.name == data.name):
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
                 detail="Department already exists"
             )
+        if not await RecordExists._check(db, User.id == data.department_head_id):
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Invalid department head selected."
+            )
         new_department = Department(
             name = data.name,
-            description = data.description
+            description = data.description,
+            department_head_id = data.department_head_id
         )
 
         try:
@@ -36,7 +43,7 @@ class DepartmentService:
     
     @staticmethod
     async def _get_department(department_id, db):
-        department_detail = await GetDetail._get_one(db, Department, Department.id == department_id)
+        department_detail = await GetDetail._get_department_by_id(db, department_id)
         if not department_detail:
             raise HTTPException(
                 status_code= status.HTTP_404_NOT_FOUND,

@@ -1,6 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import exists, select
+from sqlalchemy import exists, select, func
 from app.modules.department.department_model import Department
+from app.modules.auth.auth_model import User
+from app.modules.project.project_model import Project
 
 
 class DepartmentRepository:
@@ -35,11 +37,90 @@ class RecordExists():
 class GetDetail:
     @staticmethod
     async def _get_all(db: AsyncSession, model, *conditions):
-        stmt = select(model).order_by(model.id.desc())
-        if conditions:
-            stmt = stmt.where(*conditions)
+        user_count_subq = (
+            select(
+                User.department_id,
+                func.count(User.id).label("total_members")
+            )
+            .group_by(User.department_id)
+            .subquery()
+        )
+
+        # count projects per department
+        project_count_subq = (
+            select(
+                Project.department_id,
+                func.count(Project.id).label("total_projects")
+            )
+            .group_by(Project.department_id)
+            .subquery()
+        )
+        
+        stmt = (
+            select(
+                Department,
+                User.name.label("head_name"),
+                func.coalesce(user_count_subq.c.total_members, 0).label("total_members"),
+                func.coalesce(project_count_subq.c.total_projects, 0).label("total_projects"),
+            )
+            # department head
+            .outerjoin(User, Department.department_head_id == User.id)
+
+            # totals
+            .outerjoin(user_count_subq, Department.id == user_count_subq.c.department_id)
+            .outerjoin(project_count_subq, Department.id == project_count_subq.c.department_id)
+
+            .order_by(Department.id.desc())
+        )
         result = await db.execute(stmt)
-        return result.scalars().all()
+        return result.all()
+    
+    @staticmethod
+    async def _get_department_by_id(db: AsyncSession, department_id: int):
+        user_count_subq = (
+            select(
+                User.department_id,
+                func.count(User.id).label("total_members")
+            )
+            .group_by(User.department_id)
+            .subquery()
+        )
+
+        project_count_subq = (
+            select(
+                Project.department_id,
+                func.count(Project.id).label("total_projects")
+            )
+            .group_by(Project.department_id)
+            .subquery()
+        )
+
+        stmt = (
+            select(
+                Department,
+                User.name.label("head_name"),
+                func.coalesce(user_count_subq.c.total_members, 0).label("total_members"),
+                func.coalesce(project_count_subq.c.total_projects, 0).label("total_associated_projects"),
+            )
+            .outerjoin(User, Department.department_head_id == User.id)
+            .outerjoin(user_count_subq, Department.id == user_count_subq.c.department_id)
+            .outerjoin(project_count_subq, Department.id == project_count_subq.c.department_id)
+            .where(Department.id == department_id)
+        )
+
+        result = await db.execute(stmt)
+        return result.first()
+    
+    
+    
+    
+    # @staticmethod
+    # async def _get_all(db: AsyncSession, model, *conditions):
+    #     stmt = select(model).order_by(model.id.desc())
+    #     if conditions:
+    #         stmt = stmt.where(*conditions)
+    #     result = await db.execute(stmt)
+    #     return result.scalars().all()
     
     @staticmethod
     async def _get_one(db: AsyncSession, model, *conditions):

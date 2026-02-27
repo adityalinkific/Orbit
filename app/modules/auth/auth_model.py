@@ -27,6 +27,7 @@ class User(Base):
     department = relationship("Department", back_populates="users", lazy="selectin")
     reporting_manager = relationship("User", remote_side=[id], lazy="selectin")
     
+    department = relationship("Department", back_populates="users", foreign_keys=[department_id])
     
 class Role(Base):
     __tablename__ = "roles"
