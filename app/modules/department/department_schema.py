@@ -6,6 +6,15 @@ class CreateDepartmentRequest(BaseModel):
     name: str = Field(..., min_length=3, max_length=50)
     description: str = Field(None, max_length=255)
     department_head_id: int = Field(None)
+    
+    
+class DepartmentCreateResponse(BaseModel):
+    id: int
+    name: str
+    description: str | None
+    department_head_id: int | None
+    created_at: datetime
+    updated_at: datetime
 
 
 class DepartmentResponse(BaseModel):
