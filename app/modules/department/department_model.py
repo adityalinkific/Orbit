@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, Text, DateTime, ForeignKey
+from sqlalchemy import Column, String, Integer, Text, DateTime, ForeignKey, Boolean, text
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from app.core.database import Base
@@ -10,6 +10,7 @@ class Department(Base):
     name = Column(String(50), unique=True, nullable=False, index= True)
     description = Column(Text, nullable= True)
     department_head_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), index= True, nullable=True)
+    is_active = Column(Boolean, server_default=text("true"), nullable=False)
 
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)

@@ -6,6 +6,7 @@ class CreateDepartmentRequest(BaseModel):
     name: str = Field(..., min_length=3, max_length=50)
     description: str = Field(None, max_length=255)
     department_head_id: int = Field(None)
+    is_active: bool | None = Field(None)
     
     
 class DepartmentCreateResponse(BaseModel):
@@ -13,6 +14,7 @@ class DepartmentCreateResponse(BaseModel):
     name: str
     description: str | None
     department_head_id: int | None
+    is_active: bool
     created_at: datetime
     updated_at: datetime
 
@@ -25,6 +27,7 @@ class DepartmentResponse(BaseModel):
     department_head_name: str | None
     total_members: int
     total_associated_projects: int
+    is_active: bool
     created_at: datetime
     updated_at: datetime
     
@@ -32,3 +35,4 @@ class UpdateDepartmentRequest(BaseModel):
     name: str | None = Field(None, min_length=3, max_length=50)
     description: str = Field(None, max_length=255)
     department_head_id: int | None = Field(None)
+    is_active: bool | None = Field(None)

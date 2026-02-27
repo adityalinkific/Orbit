@@ -13,6 +13,7 @@ class DepartmentController:
             "name": department.name,
             "description": department.description,
             "department_head_id": department.department_head_id,
+            "is_active" : department.is_active,
             "created_at": department.created_at,
             "updated_at": department.updated_at
         }
@@ -34,6 +35,7 @@ class DepartmentController:
                     "department_head_name": head_name,
                     "total_members": total_members,
                     "total_associated_projects": total_projects,
+                    "is_active": dept.is_active,
                     "created_at": dept.created_at,
                     "updated_at": dept.updated_at
                 }
@@ -55,6 +57,7 @@ class DepartmentController:
             "department_head_name": head_name,
             "total_members": total_members,
             "total_associated_projects": total_projects,
+            "is_active": dept.is_active,
             "created_at": dept.created_at,
             "updated_at": dept.updated_at
         }

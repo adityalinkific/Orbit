@@ -23,7 +23,8 @@ class DepartmentService:
         new_department = Department(
             name = data.name,
             description = data.description,
-            department_head_id = data.department_head_id
+            department_head_id = data.department_head_id,
+            is_active = data.is_active if data.is_active is not None else True
         )
 
         try:
