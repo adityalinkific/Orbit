@@ -310,12 +310,9 @@ class AssignTaskReportServices:
         else:
             pending_report = await TaskDetails.get_one(db, TaskAssignment, TaskAssignment.assigned_by == current_user.id, TaskAssignment.id == assign_task_id, TaskAssignment.status == TaskStatusEnum.submitted)
         if not pending_report:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Assigned task not found."
-            )
+            raise HTTPException(status_code=404, detail="Report not found")
+        return pending_report
             
-    
     @staticmethod
     async def _submit_report(data: TaskSubmitSchema, db: AsyncSession, current_user):
         submit_report = await TaskDetails.get_one(db, TaskAssignment, TaskAssignment.id == data.assign_task_id, TaskAssignment.user_id == current_user.id)
